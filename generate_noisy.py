@@ -4,6 +4,8 @@ import librosa
 import numpy as np
 import numpy.random as rnd
 
+import pandas as pd
+
 rnd.seed(0)
 
 def snr(x, y):
@@ -27,11 +29,11 @@ def fix_snr(a, in_snr, out_snr):
 
 speech_folder = pathlib.Path('../data/speech/')
 noise_folder = pathlib.Path('../data/noise/')
-output_folder = pathlib.Path('../data/output/')
+output_folder = pathlib.Path('../data/speech+noise/')
 
 
-speech_filenames = list(speech_folder.glob('*.WAV'))
-noise_filenames = list(noise_folder.glob('*.flac'))
+speech_filenames = sorted(speech_folder.glob('*.WAV'))
+noise_filenames = sorted(noise_folder.glob('*.flac'))
 
 
 num_speech = 30
@@ -43,7 +45,14 @@ num_snr = 8
 snr_values = np.array([-20,-10,-5,0,5,10,20,np.inf])
 
 
-a = 0
+# Metadata definitions
+metadata = pd.DataFrame(index=[],columns=['filename', 'speech_name', 'noise_name', 'realization', 'SNR'])
+filename = []
+speech_name = []
+noise_name = []
+realization = []
+SNR = []
+
 for i in range(num_speech):
     signal, speech_samplerate = librosa.load(speech_filenames[i], sr=None)
 
@@ -71,11 +80,34 @@ for i in range(num_speech):
 
                 out_signal = signal + out_noise
 
-                max_val = np.maximum(-out_signal.min(), out_signal.max())
-                out_signal *= (1/max_val) * (32767/32768)
+                # Old clipping avoider
+                # max_val = np.maximum(-out_signal.min(), out_signal.max())
+                # out_signal *= (1/max_val) * (32767/32768)
+
+                # temp_val = np.maximum(-out_signal.min(), out_signal.max())
+                # if max_val < temp_val:
+                #     max_val = temp_val
+                # print(max_val)
+
+                # Avoid clipping (magic number: 5, max_val is 4.97)
+                out_signal /= 5
 
                 sf.write(output_path, out_signal, speech_samplerate)
 
-                
+                # Set metadata
+                filename.append(output_path.stem)
+                speech_name.append(speech_filenames[i].stem)
+                noise_name.append(noise_filenames[j].stem.split()[0])
+                realization.append(k)
+                SNR.append(snr_values[l])
 
+metadata['filename'] = filename
+metadata['speech_name'] = speech_name
+metadata['noise_name'] = noise_name
+metadata['realization'] = realization
+metadata['SNR'] = SNR
+
+print(metadata)
+
+metadata.to_csv('metadata.csv', index=False)
 
