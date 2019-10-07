@@ -1,13 +1,13 @@
 clc; close all; clearvars
 
-input_folder = '../data/speech+noise/';
-output_folder = '../data/processed/bayes/';
+input_folder = 'data/speech+noise/';
+output_folder = 'data/processed/bayes/';
 
 input_files = dir([input_folder,'*.wav']);
 num_files = length(input_files);
 
 % Bayes
-params.lg = 2   % MMSE target: 0=amplitude, 1=log amplitude, 2=perceptual Bayes [1]
+% params.lg = 2   % MMSE target: 0=amplitude, 1=log amplitude, 2=perceptual Bayes [1]
 
 % params.of = 2            % overlap factor = (fft length)/(frame increment) [2]
 % params.ti = 16e-3        % desired frame increment [0.016 seconds]
@@ -45,13 +45,13 @@ name = name(1:end-4)
 in_filename = [input_folder, input_files(i).name];
 out_filename = [output_folder, input_files(i).name];
 
-% stsa_wlr(in_filename, out_filename)
+stsa_mis(in_filename, out_filename)
 
-[noisy_speech, fs, nbits] = wavread(in_filename);
-
-[enhanced_speech,gg,tt,ff,zo] = v_ssubmmsev(noisy_speech,fs,params);
-
-wavwrite(enhanced_speech, fs, nbits, out_filename);
+% [noisy_speech, fs, nbits] = wavread(in_filename);
+% 
+% [enhanced_speech,gg,tt,ff,zo] = v_ssubmmsev(noisy_speech,fs,params);
+% 
+% wavwrite(enhanced_speech, fs, nbits, out_filename);
 
 
 end

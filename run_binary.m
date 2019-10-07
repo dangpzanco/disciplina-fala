@@ -1,14 +1,14 @@
 clc; close all; clearvars
 
-input_folder = '../data/speech+noise/';
-output_folder = '../data/processed/binary/';
+input_folder = 'data/speech+noise/';
+output_folder = 'data/processed/binary/';
 
 input_files = dir([input_folder,'*.wav']);
 num_files = length(input_files);
 
 % Binary Masking
-params.g  = 1;         % subtraction domain: 1=magnitude, 2=power [1]
-params.e  = 1;         % gain exponent [1]
+params.g  = 2;         % subtraction domain: 1=magnitude, 2=power [1]
+params.e  = 2;         % gain exponent [1]
 params.bt = 10^(-10/20);        % threshold for binary gain or -1 for continuous gain [-1]
 
 % params.of = 2;         % overlap factor = (fft length)/(frame increment) [2]
@@ -30,6 +30,8 @@ params.bt = 10^(-10/20);        % threshold for binary gain or -1 for continuous
 %                        % 'o' = output power spectrum
 %                        % 'O' = output complex spectrum
 
+
+
 for i=1:num_files
     
 name = input_files(i).name;
@@ -38,11 +40,13 @@ name = name(1:end-4)
 in_filename = [input_folder, input_files(i).name];
 out_filename = [output_folder, input_files(i).name];
 
-[noisy_speech, fs, nbits] = wavread(in_filename);
+% [noisy_speech, fs, nbits] = wavread(in_filename);
+[noisy_speech, fs] = audioread(in_filename);
 
 [enhanced_speech,gg,tt,ff,zo] = v_specsub(noisy_speech,fs,params);
 
-wavwrite(enhanced_speech, fs, nbits, out_filename);
+% wavwrite(enhanced_speech, fs, nbits, out_filename);
+audiowrite(out_filename, enhanced_speech, fs);
 
 end
 

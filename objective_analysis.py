@@ -56,13 +56,13 @@ results_dict = dict(noisy=np.empty(num_files),
 
 for k in trange(num_techniques):
 
-    speech_folder = pathlib.Path('../data/speech/')
-    noisy_folder = pathlib.Path('../data/speech+noise/')
+    speech_folder = pathlib.Path('data/speech/')
+    noisy_folder = pathlib.Path('data/speech+noise/')
 
     if technique_list[k] is 'noisy':
-        processed_folder = pathlib.Path('../data/speech+noise/')
+        processed_folder = pathlib.Path('data/speech+noise/')
     else:
-        processed_folder = pathlib.Path('../data/processed/') / technique_list[k]
+        processed_folder = pathlib.Path('data/processed/') / technique_list[k]
 
     for i in trange(num_files):
         
@@ -94,7 +94,7 @@ for k in trange(num_techniques):
         results_dict[technique_list[k]][i] = mse_processed.mean()
 
 
-outfile = '../data/objective_analysis/objective_results.npz'
+outfile = 'data/objective_analysis/objective_results.npz'
 
 np.savez(outfile, **results_dict)
 
