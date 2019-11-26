@@ -58,7 +58,7 @@ for i in range(num_techniques):
     spec_list.append(signal_spec)
 
 
-fig, ax = plt.subplots(4,1, figsize=(7,10), sharex=True)
+fig, ax = plt.subplots(4,1, figsize=(10,7), sharex=True)
 ax = ax.ravel()
 
 title_list = ['Sinal Contaminado', 'Máscara de Wiener', 'Estimador Bayesiano', 'Máscara Binária']
@@ -75,7 +75,11 @@ for i in range(num_techniques):
 ax[-1].set_xlabel('Tempo [s]')
 plt.tight_layout(0.01)
 
-plt.savefig('images/spectrogram_example.pdf', format='pdf')
-plt.savefig('images/spectrogram_example.png', format='png')
+# plt.savefig('images/spectrogram_example.pdf', format='pdf')
+# plt.savefig('images/spectrogram_example.png', format='png')
+
+plt.savefig('images/spectrogram_example_slides.pdf', format='pdf')
+plt.savefig('images/spectrogram_example_slides.png', format='png')
+
 
 # plt.show()
