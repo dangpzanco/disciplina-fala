@@ -7,8 +7,8 @@ input_files = dir([input_folder,'*.wav']);
 num_files = length(input_files);
 
 % Wiener
-% params.g  = 2;         % subtraction domain: 1=magnitude, 2=power [1]
-% params.e  = 2;         % gain exponent [1]
+params.g  = 2;         % subtraction domain: 1=magnitude, 2=power [1]
+params.e  = 2;         % gain exponent [1]
 
 % params.of = 2;         % overlap factor = (fft length)/(frame increment) [2]
 % params.ti = 16e-3;     % desired frame increment [0.016 seconds]
@@ -44,10 +44,12 @@ out_filename = [output_folder, input_files(i).name];
 wiener_as(in_filename, out_filename)
 
 % [noisy_speech, fs, nbits] = wavread(in_filename);
-% 
-% [enhanced_speech,gg,tt,ff,zo] = v_specsub(noisy_speech,fs,params);
-% 
+[noisy_speech, fs] = audioread(in_filename);
+
+[enhanced_speech,gg,tt,ff,zo] = v_specsub(noisy_speech,fs,params);
+
 % wavwrite(enhanced_speech, fs, nbits, out_filename);
+audiowrite(out_filename, enhanced_speech, fs);
 
 end
 

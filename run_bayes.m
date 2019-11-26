@@ -7,7 +7,7 @@ input_files = dir([input_folder,'*.wav']);
 num_files = length(input_files);
 
 % Bayes
-% params.lg = 2   % MMSE target: 0=amplitude, 1=log amplitude, 2=perceptual Bayes [1]
+params.lg = 2;   % MMSE target: 0=amplitude, 1=log amplitude, 2=perceptual Bayes [1]
 
 % params.of = 2            % overlap factor = (fft length)/(frame increment) [2]
 % params.ti = 16e-3        % desired frame increment [0.016 seconds]
@@ -19,7 +19,8 @@ num_files = length(input_files);
 % params.xn = 0            % minimum prior SNR [0]
 % params.xb = 1            % bias compensation factor for prior SNR [1]
 % params.tn = 0.5          % smoothing time constant for noise estimation [0.5 s]
-% params.le = 0.15         % VAD threshold: log(p/(1-p)) where p is speech prob in a freq bin; use -Inf to prevent updating [0.15 (=>p=0.54)]
+% params.le = 0.15         % VAD threshold: log(p/(1-p)) where p is speech prob in a freq bin; 
+%                          % use -Inf to prevent updating [0.15 (=>p=0.54)]
 % params.tx = 0.06         % initial noise interval [0.06 s]
 % params.ne = 0            % noise estimation: 0=min statistics, 1=MMSE [0]
 % params.bt = -1           % threshold for binary gain or -1 for continuous gain [-1]
@@ -45,13 +46,16 @@ name = name(1:end-4)
 in_filename = [input_folder, input_files(i).name];
 out_filename = [output_folder, input_files(i).name];
 
-stsa_mis(in_filename, out_filename)
+% stsa_mis(in_filename, out_filename)
 
 % [noisy_speech, fs, nbits] = wavread(in_filename);
-% 
-% [enhanced_speech,gg,tt,ff,zo] = v_ssubmmsev(noisy_speech,fs,params);
-% 
+[noisy_speech, fs] = audioread(in_filename);
+
+[enhanced_speech,gg,tt,ff,zo] = v_ssubmmsev(noisy_speech,fs,params);
+
 % wavwrite(enhanced_speech, fs, nbits, out_filename);
+audiowrite(out_filename, enhanced_speech, fs);
+
 
 
 end

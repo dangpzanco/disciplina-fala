@@ -6,6 +6,8 @@ import numpy.random as rnd
 
 import pandas as pd
 
+import tqdm
+
 rnd.seed(0)
 
 def snr(x, y):
@@ -27,9 +29,9 @@ def fix_snr(a, in_snr, out_snr):
 
 
 
-speech_folder = pathlib.Path('../data/speech/')
-noise_folder = pathlib.Path('../data/noise/')
-output_folder = pathlib.Path('../data/speech+noise/')
+speech_folder = pathlib.Path('data/speech/')
+noise_folder = pathlib.Path('data/noise/')
+output_folder = pathlib.Path('data/speech+noise/')
 
 
 speech_filenames = sorted(speech_folder.glob('*.WAV'))
@@ -44,6 +46,7 @@ num_snr = 8
 
 snr_values = np.array([-20,-10,-5,0,5,10,20,np.inf])
 
+speech_samplerate = 8000
 
 # Metadata definitions
 metadata = pd.DataFrame(index=[],columns=['filename', 'speech_name', 'noise_name', 'realization', 'SNR'])
@@ -54,7 +57,7 @@ realization = []
 SNR = []
 
 for i in range(num_speech):
-    signal, speech_samplerate = librosa.load(speech_filenames[i], sr=None)
+    signal, speech_samplerate = librosa.load(speech_filenames[i], sr=speech_samplerate)
 
     energy_signal = (signal ** 2).sum()
     num_samples = signal.size
@@ -75,6 +78,7 @@ for i in range(num_speech):
 
                 output_filename = f'{speech_filenames[i].stem}_{noise_filenames[j].stem.split()[0]}{k}_{snr_values[l]:.0f}.wav'
                 output_path = output_folder / output_filename
+                output_path.parent.mkdir(parents=True, exist_ok=True)
 
                 print(output_filename)
 
@@ -109,5 +113,5 @@ metadata['SNR'] = SNR
 
 print(metadata)
 
-metadata.to_csv('metadata.csv', index=False)
+metadata.to_csv('data/metadata.csv', index=False)
 
