@@ -56,6 +56,7 @@ noise_name = []
 realization = []
 SNR = []
 
+max_val = 0
 for i in range(num_speech):
     signal, speech_samplerate = librosa.load(speech_filenames[i], sr=speech_samplerate)
 
@@ -88,13 +89,13 @@ for i in range(num_speech):
                 # max_val = np.maximum(-out_signal.min(), out_signal.max())
                 # out_signal *= (1/max_val) * (32767/32768)
 
-                # temp_val = np.maximum(-out_signal.min(), out_signal.max())
-                # if max_val < temp_val:
-                #     max_val = temp_val
-                # print(max_val)
+                temp_val = np.maximum(-out_signal.min(), out_signal.max())
+                if max_val < temp_val:
+                    max_val = temp_val
+                print(max_val)
 
-                # Avoid clipping (magic number: 5, max_val is 4.97)
-                out_signal /= 5
+                # # Avoid clipping (magic number: 5, max_val is 4.97)
+                # out_signal /= 5
 
                 sf.write(output_path, out_signal, speech_samplerate)
 

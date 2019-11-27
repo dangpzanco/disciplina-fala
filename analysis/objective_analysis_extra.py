@@ -56,13 +56,13 @@ results_dict = dict(noisy=np.empty(num_files),
 
 for k in trange(num_techniques):
 
-    speech_folder = pathlib.Path('data/speech/')
-    noisy_folder = pathlib.Path('data/speech+noise/')
+    speech_folder = data_folder / 'speech'
+    noisy_folder = data_folder / 'speech+noise'
 
     if technique_list[k] is 'noisy':
-        processed_folder = pathlib.Path('data/speech+noise/')
+        processed_folder = data_folder / 'speech+noise'
     else:
-        processed_folder = pathlib.Path('data/processed/') / technique_list[k]
+        processed_folder = data_folder / 'processed' / technique_list[k]
 
     for i in trange(num_files):
         
@@ -74,8 +74,8 @@ for k in trange(num_techniques):
         signal, sr = librosa.load(speech_filename, sr=None)
         processed_signal, _ = librosa.load(processed_filename, sr=None)
 
-        # Magic number (fix amplitude mismatch)
-        signal /= 5
+        # # Magic number (fix amplitude mismatch)
+        # signal /= 5
 
         # Fix the size mismatch
         clean_size = signal.size
