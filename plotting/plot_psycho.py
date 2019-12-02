@@ -59,24 +59,40 @@ def format_figure(fig, ax):
 
 
 # results = pd.read_csv('../analysis/speechmetrics_results.csv')
-results = pd.read_csv('../analysis/matlab_results.csv')
+exp_metadata = pd.read_csv('../experiment/exp_metadata.csv')
+results = pd.read_csv('../experiment/results/results.csv')
 
-results_custom = pd.read_csv('../analysis/custom_results.csv')
-results['snrg'] = results_custom['snrg']
+subject_names = ['bruno','celso','felipe']
+subject_names = results.columns[1:]
+
+results['mos'] = results[subject_names].mean(axis=1)
+results['SNR'] = exp_metadata['SNR'].values
+results['technique'] = exp_metadata['technique'].values
+
+# results = pd.melt(results, id_vars=['id'], value_vars=subject_names)
+
+# ind = results['id'].values
+
+# results['SNR'] = exp_metadata['SNR'].values[ind]
+# results['technique'] = exp_metadata['technique'].values[ind]
+# results['mos'] = results['value']
+# results['subject'] = results['variable']
+
+
+# results = results.drop(['value', 'variable'], axis=1)
+
+print(results)
+
+
 
 # Drop SNR = Inf dB
-drop_index = (results['SNR'] == np.inf).values
-drop_index = np.where(drop_index)[0]
-results = results.drop(drop_index)
+# drop_index = (results['SNR'] == np.inf).values
+# drop_index = np.where(drop_index)[0]
+# results = results.drop(drop_index)
 
-# Normalize LLR
-results['llr'] = (2 - results['llr'])/2
 
-metric = 'pesq'
-# metric = 'stoi'
-# metric = 'srmr'
 
-metric_list = ['pesq', 'stoi', 'srmr', 'llr', 'csii', 'snrg']
+metric_list = ['pesq', 'stoi', 'srmr', 'llr', 'csii']
 
 kind = 'violin'
 kind = 'box'
@@ -85,20 +101,23 @@ kind = 'box'
 # hue_order = ['noisy', 'wiener', 'bayes', 'binary']
 hue_order = ['noisy', 'binary', 'wiener', 'bayes']
 
+metric = 'mos'
 
-for i, metric in enumerate(metric_list):
-    fig, ax = plt.subplots(figsize=(10,7))
-    
-    snsfig = sns.catplot(x='SNR', y=metric, hue='technique', ax=ax,
-        hue_order=hue_order, data=results, kind=kind)
-    plt.close(snsfig.fig)
+# df = pd.wide_to_long(results, stubnames='sub_', i='id', j='mos')
 
-    ax.set_ylabel(metric.upper())
-    ax.set_xlabel('SNR [dB]')
-    format_figure(fig, ax)
 
-    fig.savefig(f'../images/speechmetrics_{metric}.pdf', format='pdf')
-    fig.savefig(f'../images/speechmetrics_{metric}.png', format='png')
+fig, ax = plt.subplots(figsize=(10,7))
+
+snsfig = sns.catplot(x='SNR', y=metric, hue='technique', ax=ax,
+    hue_order=hue_order, data=results, kind=kind)
+plt.close(snsfig.fig)
+
+ax.set_ylabel(metric.upper())
+ax.set_xlabel('SNR [dB]')
+format_figure(fig, ax)
+
+fig.savefig(f'../images/psycho_{metric}.pdf', format='pdf')
+fig.savefig(f'../images/psycho_{metric}.png', format='png')
 
 plt.show()
 

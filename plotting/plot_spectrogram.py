@@ -23,9 +23,9 @@ stft_params = dict(n_fft=2048,
     win_length=win_length_samples)
 
 
-metadata = pd.read_csv('metadata.csv')
+metadata = pd.read_csv('../metadata.csv')
 
-technique_list = ['noisy', 'wiener', 'bayes', 'binary']
+technique_list = ['clean', 'noisy', 'wiener', 'bayes', 'binary']
 num_techniques = len(technique_list)
 
 print(metadata)
@@ -43,11 +43,14 @@ spec_list = []
 for i in range(num_techniques):
 
     if technique_list[i] is 'noisy':
-        processed_folder = pathlib.Path('data/speech+noise/')
+        processed_folder = pathlib.Path('../data/speech+noise/')
+        audio_path = processed_folder / audio_name
+    elif technique_list[i] is 'clean':
+        processed_folder = pathlib.Path('../data/speech+noise/')
+        audio_path = processed_folder /  f'{speech_name}_{noise_name}{realization}_inf.wav'
     else:
-        processed_folder = pathlib.Path('data/processed/') / technique_list[i]
-
-    audio_path = processed_folder / audio_name
+        processed_folder = pathlib.Path('../data/processed/') / technique_list[i]
+        audio_path = processed_folder / audio_name
 
     signal, sr = librosa.load(audio_path, sr=None)
     signal *= 5
@@ -58,10 +61,11 @@ for i in range(num_techniques):
     spec_list.append(signal_spec)
 
 
-fig, ax = plt.subplots(4,1, figsize=(10,7), sharex=True)
+# fig, ax = plt.subplots(4,1, figsize=(10,7), sharex=True)
+fig, ax = plt.subplots(5,1, figsize=(7,15), sharex=True)
 ax = ax.ravel()
 
-title_list = ['Sinal Contaminado', 'Máscara de Wiener', 'Estimador Bayesiano', 'Máscara Binária']
+title_list = ['Sinal Original', 'Sinal Contaminado', 'Máscara de Wiener', 'Estimador Bayesiano', 'Máscara Binária']
 
 for i in range(num_techniques):
     librosa.display.specshow(spec_list[i], x_axis='time', y_axis='linear', sr=sr, 
@@ -75,11 +79,11 @@ for i in range(num_techniques):
 ax[-1].set_xlabel('Tempo [s]')
 plt.tight_layout(0.01)
 
-# plt.savefig('images/spectrogram_example.pdf', format='pdf')
-# plt.savefig('images/spectrogram_example.png', format='png')
+plt.savefig('../images/spectrogram_example.pdf', format='pdf')
+plt.savefig('../images/spectrogram_example.png', format='png')
 
-plt.savefig('images/spectrogram_example_slides.pdf', format='pdf')
-plt.savefig('images/spectrogram_example_slides.png', format='png')
+# plt.savefig('../images/spectrogram_example_slides.pdf', format='pdf')
+# plt.savefig('../images/spectrogram_example_slides.png', format='png')
 
 
 # plt.show()
