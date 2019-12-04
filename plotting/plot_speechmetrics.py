@@ -97,8 +97,8 @@ for i, metric in enumerate(metric_list):
     ax.set_xlabel('SNR [dB]')
     format_figure(fig, ax)
 
-    fig.savefig(f'../images/speechmetrics_{metric}.pdf', format='pdf')
-    fig.savefig(f'../images/speechmetrics_{metric}.png', format='png')
+    fig.savefig(f'../images/speechmetrics_{metric}.pdf', format='pdf', transparent=True)
+    fig.savefig(f'../images/speechmetrics_{metric}.png', format='png', transparent=True)
 
 plt.show()
 

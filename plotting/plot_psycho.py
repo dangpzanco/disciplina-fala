@@ -116,8 +116,8 @@ ax.set_ylabel(metric.upper())
 ax.set_xlabel('SNR [dB]')
 format_figure(fig, ax)
 
-fig.savefig(f'../images/psycho_{metric}.pdf', format='pdf')
-fig.savefig(f'../images/psycho_{metric}.png', format='png')
+fig.savefig(f'../images/psycho_{metric}.pdf', format='pdf', transparent=True)
+fig.savefig(f'../images/psycho_{metric}.png', format='png', transparent=True)
 
 plt.show()
 

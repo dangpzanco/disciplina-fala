@@ -61,8 +61,12 @@ for i in range(num_techniques):
     spec_list.append(signal_spec)
 
 
-# fig, ax = plt.subplots(4,1, figsize=(10,7), sharex=True)
-fig, ax = plt.subplots(5,1, figsize=(7,15), sharex=True)
+slides = True
+
+if not slides:
+    fig, ax = plt.subplots(5,1, figsize=(7,15), sharex=True)
+else:
+    fig, ax = plt.subplots(5,1, figsize=(10,7), sharex=True)
 ax = ax.ravel()
 
 title_list = ['Sinal Original', 'Sinal Contaminado', 'Máscara de Wiener', 'Estimador Bayesiano', 'Máscara Binária']
@@ -79,11 +83,13 @@ for i in range(num_techniques):
 ax[-1].set_xlabel('Tempo [s]')
 plt.tight_layout(0.01)
 
-plt.savefig('../images/spectrogram_example.pdf', format='pdf')
-plt.savefig('../images/spectrogram_example.png', format='png')
 
-# plt.savefig('../images/spectrogram_example_slides.pdf', format='pdf')
-# plt.savefig('../images/spectrogram_example_slides.png', format='png')
+if not slides:
+    plt.savefig('../images/spectrogram_example.pdf', format='pdf', transparent=True)
+    plt.savefig('../images/spectrogram_example.png', format='png', transparent=True)
+else:
+    plt.savefig('../images/spectrogram_example_slides.pdf', format='pdf', transparent=True)
+    plt.savefig('../images/spectrogram_example_slides.png', format='png', transparent=True)
 
 
 # plt.show()
